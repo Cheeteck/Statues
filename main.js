@@ -9,18 +9,37 @@ async function getSkinURL(username) {
     const base64 = profileData.properties[0].value;
     const decoded = JSON.parse(atob(base64));
   
-    const skinURL = decoded.textures.SKIN.url;
-    return skinURL;
+    return decoded.textures.SKIN.url;
   }
   
+  let viewer;  // Declare viewer outside so it can be reused
+  
   async function fetchSkin() {
-    const username = document.getElementById("usernameInput").value;
+    const username = document.getElementById("usernameInput").value.trim();
     const result = document.getElementById("result");
+    const container = document.getElementById("skin-viewer");
     result.textContent = "Loading...";
   
     try {
-      const url = await getSkinURL(username);
-      result.innerHTML = `Skin URL: <a href="${url}" target="_blank">${url}</a><br><img src="${url}" width="64" height="64">`;
+      const skinURL = await getSkinURL(username);
+  
+      // Clear previous viewer if exists
+      if (viewer) {
+        viewer.dispose();
+        container.innerHTML = "";
+      }
+  
+      // Create new viewer and load skin
+      viewer = new skinview3d.SkinViewer({
+        width: 300,
+        height: 400,
+        canvas: document.createElement("canvas"),
+      });
+  
+      container.appendChild(viewer.canvas);
+      viewer.loadSkin(skinURL);
+  
+      result.textContent = ""; // Clear loading text
     } catch (err) {
       result.textContent = `Error: ${err.message}`;
     }

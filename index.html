@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Statues</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Statues1</h1>
+  <h1>Statues</h1>
 
   <input id="usernameInput" type="text" placeholder="Enter Minecraft Username" />
   <button onclick="fetchSkin()">Get Skin</button>
 
+  <div id="skin-viewer" style="width: 300px; height: 400px; margin-top: 20px;"></div>
   <p id="result"></p>
 
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skinview3d@1.6.0/dist/skinview3d.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
