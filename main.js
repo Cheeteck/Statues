@@ -1,50 +1,44 @@
 async function getSkinURL(username) {
-  const uuidRes = await fetch(
-    `https://corsproxy.io/?https://api.mojang.com/users/profiles/minecraft/${username}`
-  );
+  const uuidRes = await fetch(`https://corsproxy.io/?https://api.mojang.com/users/profiles/minecraft/${username}`);
   if (!uuidRes.ok) throw new Error("Username not found");
   const uuidData = await uuidRes.json();
   const uuid = uuidData.id;
 
-  const profileRes = await fetch(
-    `https://corsproxy.io/?https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`
-  );
-  if (!profileRes.ok) throw new Error("Failed to fetch profile");
+  const profileRes = await fetch(`https://corsproxy.io/?https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`);
   const profileData = await profileRes.json();
-  const decoded = JSON.parse(atob(profileData.properties[0].value));
+  const base64 = profileData.properties[0].value;
+  const decoded = JSON.parse(atob(base64));
 
   return decoded.textures.SKIN.url;
 }
 
-async function fetchSkin() {
-  const username = document.getElementById("usernameInput").value.trim();
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("fetchButton");
   const result = document.getElementById("result");
-  const container = document.getElementById("skin-viewer");
+  const skinContainer = document.getElementById("skin-viewer");
 
-  result.textContent = "Loading...";
-  try {
-    const skinURL = await getSkinURL(username);
+  button.addEventListener("click", async () => {
+    const username = document.getElementById("usernameInput").value;
+    result.textContent = "Loading...";
 
-    // Clear old viewer
-    container.innerHTML = "";
+    try {
+      const url = await getSkinURL(username);
 
-    // Create viewer
-    const viewer = new skinview3d.SkinViewer({
-      width: 300,
-      height: 400,
-      skin: skinURL,
-    });
+      // Clear existing viewer
+      skinContainer.innerHTML = "";
 
-    container.appendChild(viewer.canvas);
-    viewer.controls.enableRotate = true;
+      const viewer = new skinview3d.SkinViewer({
+        canvas: undefined,
+        width: 300,
+        height: 400,
+        skin: url
+      });
 
-    const walk = new skinview3d.WalkingAnimation();
-    viewer.animation = walk;
-    walk.speed = 1;
-    walk.play();
+      skinContainer.appendChild(viewer.canvas);
 
-    result.textContent = "";
-  } catch (err) {
-    result.textContent = `Error: ${err.message}`;
-  }
-}
+      // Optional animation
+      viewer.controls.enableZoom = true;
+      viewer.animation = new skinview3d.IdleAnimation();
+      viewer.animation.speed = 1;
+
+      result.textCon
