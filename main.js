@@ -1,5 +1,5 @@
 async function getSkinURL(username) {
-    const uuidRes = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+    const uuidRes = await fetch(`https://corsproxy.io/?https://api.mojang.com/users/profiles/minecraft/${username}`);
     if (!uuidRes.ok) throw new Error("Username not found");
     const uuidData = await uuidRes.json();
     const uuid = uuidData.id;
