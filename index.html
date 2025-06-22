@@ -3,27 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <title>Statues</title>
-  <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
-    #ui {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 10px;
-      border-radius: 5px;
-      z-index: 10;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="ui">
-    <input id="usernameInput" type="text" placeholder="Enter Minecraft Username" />
-    <button onclick="fetchSkin()">Get Skin</button>
-    <p id="result"></p>
-  </div>
-  <div id="viewer"></div>
+  <h1>Statues</h1>
+
+  <input id="usernameInput" type="text" placeholder="Enter Minecraft Username" />
+  <button onclick="fetchSkin()">Get Skin</button>
+
+  <div id="result"></div>
+  <canvas id="skinCanvas"></canvas>
 
   <script type="module" src="main.js"></script>
 </body>
