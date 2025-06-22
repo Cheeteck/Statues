@@ -1,16 +1,20 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js';
-import { SkinViewer } from 'https://cdn.jsdelivr.net/npm/skinview3d@1.6.0/dist/skinview3d.module.js';
+import skinview3d from 'https://cdn.skypack.dev/skinview3d';
 
 async function getSkinURL(username) {
-  const uuidRes = await fetch(`https://corsproxy.io/?https://api.mojang.com/users/profiles/minecraft/${username}`);
+  const uuidRes = await fetch(
+    `https://corsproxy.io/?https://api.mojang.com/users/profiles/minecraft/${username}`
+  );
   if (!uuidRes.ok) throw new Error("Username not found");
   const uuidData = await uuidRes.json();
   const uuid = uuidData.id;
 
-  const profileRes = await fetch(`https://corsproxy.io/?https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`);
+  const profileRes = await fetch(
+    `https://corsproxy.io/?https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`
+  );
+  if (!profileRes.ok) throw new Error("Failed to fetch profile");
   const profileData = await profileRes.json();
-  const base64 = profileData.properties[0].value;
-  const decoded = JSON.parse(atob(base64));
+  const decoded = JSON.parse(atob(profileData.properties[0].value));
 
   return decoded.textures.SKIN.url;
 }
@@ -21,24 +25,26 @@ export async function fetchSkin() {
   const username = document.getElementById("usernameInput").value.trim();
   const result = document.getElementById("result");
   const container = document.getElementById("skin-viewer");
-  result.textContent = "Loading...";
 
+  result.textContent = "Loading...";
   try {
     const skinURL = await getSkinURL(username);
 
+    // Remove previous viewer
     if (viewer) {
       viewer.dispose();
       container.innerHTML = "";
     }
 
-    viewer = new SkinViewer({
+    // Initialize skinviewer3d
+    viewer = new skinview3d.SkinViewer({
+      canvas: document.createElement("canvas"),
       width: 300,
       height: 400,
-      canvas: document.createElement("canvas"),
+      skin: skinURL
     });
 
     container.appendChild(viewer.canvas);
-    viewer.loadSkin(skinURL);
 
     result.textContent = "";
   } catch (err) {
@@ -46,5 +52,5 @@ export async function fetchSkin() {
   }
 }
 
-// Make fetchSkin available on global scope for inline onclick
+// Make it accessible globally
 window.fetchSkin = fetchSkin;
