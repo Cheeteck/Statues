@@ -1,5 +1,4 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js';
-import skinview3d from 'https://cdn.skypack.dev/skinview3d';
+import * as skinview3d from "https://cdn.skypack.dev/skinview3d";
 
 async function getSkinURL(username) {
   const uuidRes = await fetch(
@@ -21,7 +20,7 @@ async function getSkinURL(username) {
 
 let viewer;
 
-export async function fetchSkin() {
+async function fetchSkin() {
   const username = document.getElementById("usernameInput").value.trim();
   const result = document.getElementById("result");
   const container = document.getElementById("skin-viewer");
@@ -36,7 +35,6 @@ export async function fetchSkin() {
       container.innerHTML = "";
     }
 
-    // Initialize skinviewer3d
     viewer = new skinview3d.SkinViewer({
       canvas: document.createElement("canvas"),
       width: 300,
@@ -46,11 +44,16 @@ export async function fetchSkin() {
 
     container.appendChild(viewer.canvas);
 
+    viewer.controls.enableRotate = true;
+    viewer.animation = new skinview3d.WalkingAnimation();
+    viewer.animation.speed = 1;
+    viewer.animation.play();
+
     result.textContent = "";
   } catch (err) {
     result.textContent = `Error: ${err.message}`;
   }
 }
 
-// Make it accessible globally
-window.fetchSkin = fetchSkin;
+// Hook it up to the button
+document.getElementById("getSkinBtn").addEventListener("click", fetchSkin);
