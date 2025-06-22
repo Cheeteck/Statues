@@ -1,13 +1,15 @@
-// === Set up THREE.js scene ===
+import * as THREE from './libs/three.module.js';
+import { OrbitControls } from './libs/OrbitControls.js';
+
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
 camera.position.set(0, 1.6, 3);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.getElementById('viewer').appendChild(renderer.domElement);
+document.body.appendChild(renderer.domElement);
 
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.target.set(0, 1, 0);
 controls.update();
@@ -25,7 +27,16 @@ function animate() {
 }
 animate();
 
-// === Skin Fetching ===
+function clearModel() {
+  scene.traverse(obj => {
+    if (obj.userData.isPlayer) {
+      scene.remove(obj);
+      obj.geometry?.dispose?.();
+      obj.material?.dispose?.();
+    }
+  });
+}
+
 async function getSkinURL(username) {
   const r = await fetch(`https://corsproxy.io/?https://api.mojang.com/users/profiles/minecraft/${username}`);
   if (!r.ok) throw new Error("Username not found");
@@ -37,18 +48,6 @@ async function getSkinURL(username) {
   return url;
 }
 
-// === Clear old model ===
-function clearModel() {
-  scene.traverse(obj => {
-    if (obj.userData.isPlayer) {
-      scene.remove(obj);
-      obj.geometry?.dispose?.();
-      obj.material?.dispose?.();
-    }
-  });
-}
-
-// === Create a basic cube body model ===
 function createPlayerModel(texture) {
   const group = new THREE.Group();
   group.userData.isPlayer = true;
@@ -56,16 +55,15 @@ function createPlayerModel(texture) {
   const material = new THREE.MeshBasicMaterial({ map: texture });
   material.map.magFilter = THREE.NearestFilter;
 
-  const geometry = new THREE.BoxGeometry(1, 2, 1); // Basic body shape
+  const geometry = new THREE.BoxGeometry(1, 2, 1); // basic box
   const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.set(0, 1, 0); // Lift so bottom is on ground
+  mesh.position.set(0, 1, 0);
   group.add(mesh);
 
   scene.add(group);
 }
 
-// === Fetch skin + build model ===
-async function fetchSkin() {
+window.fetchSkin = async function () {
   const username = document.getElementById("usernameInput").value.trim();
   const result = document.getElementById("result");
   result.textContent = "Loading...";
@@ -81,3 +79,4 @@ async function fetchSkin() {
   } catch (err) {
     result.textContent = `Error: ${err.message}`;
   }
+}
