@@ -1,6 +1,3 @@
-import * as THREE from "https://cdn.skypack.dev/three";
-import * as skinview3d from "https://cdn.skypack.dev/skinview3d";
-
 async function getSkinURL(username) {
   const uuidRes = await fetch(
     `https://corsproxy.io/?https://api.mojang.com/users/profiles/minecraft/${username}`
@@ -30,17 +27,15 @@ async function fetchSkin() {
   try {
     const skinURL = await getSkinURL(username);
 
-    // Clean up old viewer
-    if (viewer) {
-      viewer.dispose();
-      container.innerHTML = "";
-    }
+    // Clear old viewer
+    container.innerHTML = "";
 
+    // Create viewer
     viewer = new skinview3d.SkinViewer({
-      canvas: document.createElement("canvas"),
       width: 300,
       height: 400,
-      skin: skinURL
+      skin: skinURL,
+      canvas: undefined // let it auto-create a canvas
     });
 
     container.appendChild(viewer.canvas);
@@ -56,5 +51,3 @@ async function fetchSkin() {
     result.textContent = `Error: ${err.message}`;
   }
 }
-
-document.getElementById("getSkinBtn").addEventListener("click", fetchSkin);

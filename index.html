@@ -9,11 +9,13 @@
   <h1>Statues</h1>
 
   <input id="usernameInput" type="text" placeholder="Enter Minecraft Username" />
-  <button id="getSkinBtn">Get Skin</button>
+  <button onclick="fetchSkin()">Get Skin</button>
 
   <div id="skin-viewer" style="width: 300px; height: 400px; margin-top: 20px;"></div>
   <p id="result"></p>
 
-  <script type="module" src="main.js"></script>
+  <!-- ✅ Load SkinView3D UMD version -->
+  <script src="https://unpkg.com/skinview3d/bundles/skinview3d.min.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
