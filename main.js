@@ -12,38 +12,33 @@ async function getSkinURL(username) {
   return decoded.textures.SKIN.url;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const button = document.getElementById("fetchButton");
+async function fetchSkin() {
+  const username = document.getElementById("usernameInput").value;
   const result = document.getElementById("result");
-  const skinContainer = document.getElementById("skin-viewer");
+  const viewerDiv = document.getElementById("viewer");
 
-  button.addEventListener("click", async () => {
-    const username = document.getElementById("usernameInput").value;
-    result.textContent = "Loading...";
+  result.textContent = "Loading...";
 
-    try {
-      const url = await getSkinURL(username);
+  try {
+    const skinUrl = await getSkinURL(username);
+    result.textContent = ""; // Clear result
 
-      // Clear old model
-      skinContainer.innerHTML = "";
+    // Clear old viewer
+    viewerDiv.innerHTML = "";
 
-      const viewer = new skinview3d.SkinViewer({
-        canvas: undefined,
-        width: 300,
-        height: 400,
-        skin: url
-      });
+    const skinViewer = new skinview3d.SkinViewer({
+      canvas: viewerDiv.appendChild(document.createElement("canvas")),
+      width: 300,
+      height: 400,
+      skin: skinUrl
+    });
 
-      skinContainer.appendChild(viewer.canvas);
+    skinViewer.controls.enableZoom = true;
+    skinViewer.animation = new skinview3d.WalkingAnimation();
+    skinViewer.animation.speed = 1;
+    skinViewer.animation.play();
 
-      // Optional animation
-      viewer.controls.enableZoom = true;
-      viewer.animation = new skinview3d.IdleAnimation();
-      viewer.animation.speed = 1;
-
-      result.textContent = ""; // Clear status
-    } catch (err) {
-      result.textContent = `Error: ${err.message}`;
-    }
-  });
-});
+  } catch (err) {
+    result.textContent = `Error: ${err.message}`;
+  }
+}
