@@ -1,18 +1,24 @@
-async function getSkinURL(username) {
-  // same as before using corsproxy
-}
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 1.6, 3);
 
-async function fetchSkin() {
-  const result = document.getElementById('result');
-  const canvas = document.getElementById('skinCanvas');
-  const username = document.getElementById('usernameInput').value;
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById('viewer').appendChild(renderer.domElement);
 
-  result.textContent = 'Loading...';
-  try {
-    const skinURL = await getSkinURL(username);
-    result.textContent = '';
-    new PrismarineViewer.SkinViewer(canvas, { skin: skinURL, width: 300, height: 400 });
-  } catch(err) {
-    result.textContent = 'Error: ' + err.message;
-  }
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(0, 1, 0);
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
 }
+animate();
