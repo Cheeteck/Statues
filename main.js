@@ -4,7 +4,7 @@ async function getSkinURL(username) {
     const uuidData = await uuidRes.json();
     const uuid = uuidData.id;
   
-    const profileRes = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`);
+    const profileRes = await fetch(`https://corsproxy.io/?https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`);
     const profileData = await profileRes.json();
     const base64 = profileData.properties[0].value;
     const decoded = JSON.parse(atob(base64));
