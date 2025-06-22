@@ -1,24 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Statues</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:,">
-</head>
+<head><meta charset="UTF-8"><title>Statues</title></head>
 <body>
-  <h1>Statues</h1>
-
-  <input id="usernameInput" type="text" placeholder="Enter Minecraft Username" />
-  <button onclick="fetchSkin()">Get Skin</button>
-
-  <div id="viewer" style="width: 300px; height: 400px; margin-top: 20px;"></div>
+  <input id="usernameInput" placeholder="Minecraft username" />
+  <button onclick="fetchSkin()">Show Skin</button>
+  <canvas id="skinCanvas" width="300" height="400"></canvas>
   <p id="result"></p>
-
-  <!-- ✅ Load SkinView3D (version 3.4.1) -->
-  <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.1/bundles/skinview3d.min.js"></script>
-
-  <!-- ✅ Your script -->
+  <script src="https://unpkg.com/prismarine-viewer@2.6.0/dist/index.umd.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
