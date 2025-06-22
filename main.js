@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const url = await getSkinURL(username);
 
-      // Clear existing viewer
+      // Clear old model
       skinContainer.innerHTML = "";
 
       const viewer = new skinview3d.SkinViewer({
@@ -41,4 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
       viewer.animation = new skinview3d.IdleAnimation();
       viewer.animation.speed = 1;
 
-      result.textCon
+      result.textContent = ""; // Clear status
+    } catch (err) {
+      result.textContent = `Error: ${err.message}`;
+    }
+  });
+});
