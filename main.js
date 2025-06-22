@@ -16,8 +16,6 @@ async function getSkinURL(username) {
   return decoded.textures.SKIN.url;
 }
 
-let viewer;
-
 async function fetchSkin() {
   const username = document.getElementById("usernameInput").value.trim();
   const result = document.getElementById("result");
@@ -31,11 +29,10 @@ async function fetchSkin() {
     container.innerHTML = "";
 
     // Create viewer
-    viewer = new skinview3d.SkinViewer({
+    const viewer = new skinview3d.SkinViewer({
       width: 300,
       height: 400,
       skin: skinURL,
-      canvas: undefined // let it auto-create a canvas
     });
 
     container.appendChild(viewer.canvas);
