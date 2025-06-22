@@ -1,3 +1,4 @@
+import * as THREE from "https://cdn.skypack.dev/three";
 import * as skinview3d from "https://cdn.skypack.dev/skinview3d";
 
 async function getSkinURL(username) {
@@ -29,7 +30,7 @@ async function fetchSkin() {
   try {
     const skinURL = await getSkinURL(username);
 
-    // Remove previous viewer
+    // Clean up old viewer
     if (viewer) {
       viewer.dispose();
       container.innerHTML = "";
@@ -43,11 +44,12 @@ async function fetchSkin() {
     });
 
     container.appendChild(viewer.canvas);
-
     viewer.controls.enableRotate = true;
-    viewer.animation = new skinview3d.WalkingAnimation();
-    viewer.animation.speed = 1;
-    viewer.animation.play();
+
+    const walk = new skinview3d.WalkingAnimation();
+    viewer.animation = walk;
+    walk.speed = 1;
+    walk.play();
 
     result.textContent = "";
   } catch (err) {
@@ -55,5 +57,4 @@ async function fetchSkin() {
   }
 }
 
-// Hook it up to the button
 document.getElementById("getSkinBtn").addEventListener("click", fetchSkin);
